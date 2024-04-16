@@ -1,0 +1,23 @@
+{
+  "name": "knr-gulp-setting-templete",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "gulp dev",
+    "build": "gulp build"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.24.4",
+    "babel-preset-env": "^1.7.0",
+    "@babel/register": "^7.23.7",
+    "gulp": "^5.0.0",
+    "gulp-pug": "^5.0.0",
+    "del": "^7.1.0"
+  },
+  "dependencies": {
+  }
+}
