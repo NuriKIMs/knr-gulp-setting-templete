@@ -12,12 +12,10 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.24.4",
-    "babel-preset-env": "^1.7.0",
     "@babel/register": "^7.23.7",
+    "babel-preset-env": "^1.7.0",
+    "del": "^6.1.1",
     "gulp": "^5.0.0",
-    "gulp-pug": "^5.0.0",
-    "del": "^7.1.0"
-  },
-  "dependencies": {
+    "gulp-pug": "^5.0.0"
   }
 }

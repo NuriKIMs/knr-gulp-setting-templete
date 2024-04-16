@@ -4,12 +4,12 @@ import del from "del";
 
 const routes = {
   pug: {
-    src:"src/*.png",
+    src:"src/*.pug",
     dest: "build",
 },
 };
 
-const pug = () => gulp.src(routes.pug.src).pipe(gpug()).pipe(gulp.dest(routes.pug.dest));
+export const pug = () => gulp.src(routes.pug.src).pipe(gpug()).pipe(gulp.dest(routes.pug.dest));
 
 const clean = () => del(["build"]);
 
