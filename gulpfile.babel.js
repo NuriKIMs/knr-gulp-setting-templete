@@ -9,6 +9,7 @@ import dartSass from 'sass';
 import gulpSass from 'gulp-sass';
 const sass = gulpSass(dartSass);
 import autoprefixer from 'gulp-autoprefixer'; //구형에서 호환할 수 있도록 지원
+import miniCSS from 'gulp-csso'; //css파일 최소화
 
 
 
@@ -45,7 +46,7 @@ const img = () => gulp.src(routes.img.src).pipe(image()).pipe(gulp.dest(routes.i
 //"error",sass.logError : 터미널에 스타일 오류 확인 가능
 const styles = () => gulp.src(routes.scss.src).pipe(sass().on("error",sass.logError)).pipe(autoprefixer({
   cascade: false
-})).pipe(gulp.dest(routes.scss.dest));
+})).pipe(miniCSS()).pipe(gulp.dest(routes.scss.dest));
 
 const watch = () => {
   gulp.watch(routes.pug.watch, pug);
