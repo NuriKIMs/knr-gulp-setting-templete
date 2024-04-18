@@ -5,54 +5,72 @@ import del from "del";
 import ws from "gulp-webserver";
 import image from "gulp-image";
 //To use gulp-sass in an ECMAScript module
-import dartSass from 'sass';
-import gulpSass from 'gulp-sass';
+import dartSass from "sass";
+import gulpSass from "gulp-sass";
 const sass = gulpSass(dartSass);
-import autoprefixer from 'gulp-autoprefixer'; //구형에서 호환할 수 있도록 지원
-import miniCSS from 'gulp-csso'; //css파일 최소화
-
-
+import autoprefixer from "gulp-autoprefixer"; //구형에서 호환할 수 있도록 지원
+import miniCSS from "gulp-csso"; //css파일 최소화
 
 //2. route 추가
 const routes = {
   pug: {
     watch: "src/**/*.pug",
-    src:"src/*.pug",
+    src: "src/*.pug",
     dest: "build",
   },
-  img:{
+  img: {
     watch: "src/img/*",
     src: "src/img/*",
-    dest: "build/img"
+    dest: "build/img",
   },
-  scss:{
+  scss: {
     watch: "src/scss/**/*.scss",
     src: "src/scss/style.scss",
-    dest: "build/css"
-  }
+    dest: "build/css",
+  },
 };
 
 //3. 변수추가 (공식문서 확인) 소스 찾아서~연결하고~빌드까지
-const pug = () => gulp.src(routes.pug.src).pipe(gpug()).pipe(gulp.dest(routes.pug.dest));
+const pug = () =>
+  gulp.src(routes.pug.src).pipe(gpug()).pipe(gulp.dest(routes.pug.dest));
 
 const clean = () => del(["build/"]);
 
-const webserver = () => gulp.src("build").pipe(ws({
-  livereload: true, open: true
-}));
+const webserver = () =>
+  gulp.src("build").pipe(
+    ws({
+      livereload: true,
+      open: true,
+    }),
+  );
 
-const img = () => gulp.src(routes.img.src).pipe(image()).pipe(gulp.dest(routes.img.dest))
+const img = () =>
+  gulp.src(routes.img.src).pipe(image()).pipe(gulp.dest(routes.img.dest));
 
 //"error",sass.logError : 터미널에 스타일 오류 확인 가능
-const styles = () => gulp.src(routes.scss.src).pipe(sass().on("error",sass.logError)).pipe(autoprefixer({
-  cascade: false
-})).pipe(miniCSS()).pipe(gulp.dest(routes.scss.dest));
+const styles = () =>
+  gulp
+    .src(routes.scss.src)
+    .pipe(sass().on("error", sass.logError))
+    .pipe(
+      autoprefixer({
+        cascade: false,
+      }),
+    )
+    .pipe(
+      csso({
+        restructure: false,
+        sourceMap: true,
+        debug: true,
+      }),
+    )
+    .pipe(gulp.dest(routes.scss.dest));
 
 const watch = () => {
   gulp.watch(routes.pug.watch, pug);
   gulp.watch(routes.img.watch, img); //이미지도 감시하고 싶다면 추가
-  gulp.watch(routes.scss.watch, styles); 
-}
+  gulp.watch(routes.scss.watch, styles);
+};
 
 const prepare = gulp.series([clean, img]);
 
@@ -68,5 +86,5 @@ export const dev = gulp.series([prepare, assets, live]);
 // gulp.pipe() : pipe를 통과시키면서 추가 작업을 함!
 // gulp.series() : 여러 task 를 전달받아 직렬 실행해주는 메소드
 // gulp.dest("폴더명") : 여기에 결과물을 생성!
-// export는 package.json에서 쓸 command만 해주면 됨. 
+// export는 package.json에서 쓸 command만 해주면 됨.
 // 만약 clean을 export 하지 않는다면, console 이나 package.json에서 사용하지 못함.

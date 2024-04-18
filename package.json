@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "gulp dev",
-    "build": "gulp build"
+    "build": "gulp build",
+    "prepare": "husky"
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +23,12 @@
     "gulp-pug": "^5.0.0",
     "gulp-sass": "^5.1.0",
     "gulp-webserver": "^0.9.1",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "3.2.5",
     "sass": "^1.75.0"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   }
 }
