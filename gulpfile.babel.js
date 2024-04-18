@@ -1,6 +1,7 @@
 //1. import 부터 만들기
 import gulp from "gulp";
 import gpug from "gulp-pug";
+import ghtml from "gulp-html";
 import del from "del";
 import ws from "gulp-webserver";
 import image from "gulp-image";
@@ -15,6 +16,11 @@ import babelify from "babelify";
 
 //2. route 추가
 const routes = {
+  html: {
+    watch: "src/**/*.html",
+    src: "src/*.html",
+    dest: "src/build",
+  },
   pug: {
     watch: "src/**/*.pug",
     src: "src/*.pug",
@@ -38,9 +44,13 @@ const routes = {
 };
 
 //3. 변수추가 (공식문서 확인) 소스 찾아서~연결하고~빌드까지
+const html = () =>
+  gulp.src(routes.html.src).pipe(ghtml()).pipe(gulp.dest(routes.html.dest));
+
 const pug = () =>
   gulp.src(routes.pug.src).pipe(gpug()).pipe(gulp.dest(routes.pug.dest));
 
+//작업 후 삭제
 const clean = () => del(["build/"]);
 
 const webserver = () =>
@@ -81,6 +91,7 @@ const js = () =>
     .pipe(gulp.dest(routes.js.dest));
 
 const watch = () => {
+  gulp.watch(routes.html.watch, html);
   gulp.watch(routes.pug.watch, pug);
   gulp.watch(routes.img.src, img);
   gulp.watch(routes.scss.watch, styles);
@@ -89,14 +100,14 @@ const watch = () => {
 
 const prepare = gulp.series([clean, img]);
 
-const assets = gulp.series([pug, styles, js]);
+const assets = gulp.series([html, pug, styles, js]);
 
 //두가지 task를 병행하게 함.
 const live = gulp.parallel([webserver, watch]);
 
 //gulp series를 실행할 때 마다 prepare, assets, postDev를 실행한다.
-export const dev = gulp.series([prepare, assets, live]);
 export const build = gulp.series([prepare, assets]);
+export const dev = gulp.series([build, live]);
 
 // gulp.src() : gulp 작업 타겟들의 경로 및 형식을 지정!
 // gulp.pipe() : pipe를 통과시키면서 추가 작업을 함!
