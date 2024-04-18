@@ -96,6 +96,7 @@ const live = gulp.parallel([webserver, watch]);
 
 //gulp series를 실행할 때 마다 prepare, assets, postDev를 실행한다.
 export const dev = gulp.series([prepare, assets, live]);
+export const build = gulp.series([prepare, assets]);
 
 // gulp.src() : gulp 작업 타겟들의 경로 및 형식을 지정!
 // gulp.pipe() : pipe를 통과시키면서 추가 작업을 함!
