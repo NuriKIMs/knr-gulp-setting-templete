@@ -10,6 +10,8 @@ import gulpSass from "gulp-sass";
 const sass = gulpSass(dartSass);
 import autoprefixer from "gulp-autoprefixer"; //구형에서 호환할 수 있도록 지원
 import miniCSS from "gulp-csso"; //css파일 최소화
+import bro from "gulp-bro";
+import babelify from "babelify";
 
 //2. route 추가
 const routes = {
@@ -27,6 +29,11 @@ const routes = {
     watch: "src/scss/**/*.scss",
     src: "src/scss/style.scss",
     dest: "build/css",
+  },
+  js: {
+    watch: "src/js/**/*.js",
+    src: "src/js/main.js",
+    dest: "build/js",
   },
 };
 
@@ -57,24 +64,32 @@ const styles = () =>
         cascade: false,
       }),
     )
+    .pipe(miniCSS())
+    .pipe(gulp.dest(routes.scss.dest));
+
+const js = () =>
+  gulp
+    .src(routes.js.src)
     .pipe(
-      csso({
-        restructure: false,
-        sourceMap: true,
-        debug: true,
+      bro({
+        transform: [
+          babelify.configure({ presets: ["@babel/preset-env"] }),
+          ["uglifyify", { global: true }],
+        ],
       }),
     )
-    .pipe(gulp.dest(routes.scss.dest));
+    .pipe(gulp.dest(routes.js.dest));
 
 const watch = () => {
   gulp.watch(routes.pug.watch, pug);
-  gulp.watch(routes.img.watch, img); //이미지도 감시하고 싶다면 추가
+  gulp.watch(routes.img.src, img);
   gulp.watch(routes.scss.watch, styles);
+  gulp.watch(routes.js.watch, js);
 };
 
 const prepare = gulp.series([clean, img]);
 
-const assets = gulp.series([pug, styles]);
+const assets = gulp.series([pug, styles, js]);
 
 //두가지 task를 병행하게 함.
 const live = gulp.parallel([webserver, watch]);
