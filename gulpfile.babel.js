@@ -1,7 +1,7 @@
 //1. import 부터 만들기
 import gulp from "gulp";
 import gpug from "gulp-pug";
-import ghtml from "gulp-html";
+import htmlmin from "gulp-htmlmin";
 import del from "del";
 import ws from "gulp-webserver";
 import image from "gulp-image";
@@ -13,50 +13,65 @@ import autoprefixer from "gulp-autoprefixer"; //구형에서 호환할 수 있�
 import miniCSS from "gulp-csso"; //css파일 최소화
 import bro from "gulp-bro";
 import babelify from "babelify";
+import fileinclude from "gulp-file-include";
+// import browserSync from "browser-sync";
+
+// const bs = browserSync.create();
 
 //2. route 추가
 const routes = {
   html: {
     watch: "src/**/*.html",
     src: "src/*.html",
-    dest: "src/build",
+    dest: "src/dist",
   },
   pug: {
     watch: "src/**/*.pug",
     src: "src/*.pug",
-    dest: "build",
+    dest: "dist",
   },
   img: {
     watch: "src/img/*",
     src: "src/img/*",
-    dest: "build/img",
+    dest: "dist/img",
   },
   scss: {
     watch: "src/scss/**/*.scss",
     src: "src/scss/style.scss",
-    dest: "build/css",
+    dest: "dist/css",
   },
   js: {
     watch: "src/js/**/*.js",
     src: "src/js/main.js",
-    dest: "build/js",
+    dest: "dist/js",
   },
 };
 
 //3. 변수추가 (공식문서 확인) 소스 찾아서~연결하고~빌드까지
 const html = () =>
-  gulp.src(routes.html.src).pipe(ghtml()).pipe(gulp.dest(routes.html.dest));
+  gulp
+    .src(routes.html.src)
+    .pipe(
+      fileinclude({
+        prefix: "@@",
+        basepath: "/knr-gulp-setting-templete/src",
+      }),
+    )
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.dest));
+// .pipe(bs.stream());
 
 const pug = () =>
   gulp.src(routes.pug.src).pipe(gpug()).pipe(gulp.dest(routes.pug.dest));
 
 //작업 후 삭제
-const clean = () => del(["build/"]);
+const clean = () => del(["dist/"]);
 
 const webserver = () =>
-  gulp.src("build").pipe(
+  gulp.src("dist").pipe(
     ws({
       livereload: true,
+      // directoryListing: true,
       open: true,
     }),
   );
@@ -102,8 +117,16 @@ const prepare = gulp.series([clean, img]);
 
 const assets = gulp.series([html, pug, styles, js]);
 
-//두가지 task를 병행하게 함.
-const live = gulp.parallel([webserver, watch]);
+// BrowserSync를 시작하는 task 추가
+const live = gulp.series([
+  webserver,
+  watch,
+  // function () {
+  //   bs.init({
+  //     server: "./dist",
+  //   });
+  // },
+]);
 
 //gulp series를 실행할 때 마다 prepare, assets, postDev를 실행한다.
 export const build = gulp.series([prepare, assets]);

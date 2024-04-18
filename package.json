@@ -17,11 +17,13 @@
     "@babel/register": "^7.23.7",
     "babel-preset-env": "^1.7.0",
     "babelify": "^10.0.0",
+    "browser-sync": "^3.0.2",
     "del": "^6.1.1",
     "gulp": "^5.0.0",
     "gulp-autoprefixer": "^9.0.0",
     "gulp-bro": "^2.0.0",
     "gulp-csso": "^4.0.1",
+    "gulp-file-include": "^2.3.0",
     "gulp-image": "^6.3.1",
     "gulp-pug": "^5.0.0",
     "gulp-sass": "^5.1.0",
@@ -36,7 +38,7 @@
     "**/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
-    "gulp-html": "^6.0.0",
+    "gulp-htmlmin": "^5.0.1",
     "validator": "^13.11.0"
   }
 }
