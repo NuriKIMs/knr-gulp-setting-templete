@@ -1,22 +1,23 @@
 //1. import 부터 만들기
+import del from "del";
+// import BrowserSync from "browser-sync";
 import gulp from "gulp";
 import gpug from "gulp-pug";
 import htmlmin from "gulp-htmlmin";
-import del from "del";
 import ws from "gulp-webserver";
 import image from "gulp-image";
 //To use gulp-sass in an ECMAScript module
 import dartSass from "sass";
 import gulpSass from "gulp-sass";
 const sass = gulpSass(dartSass);
+import gulpIf from "gulp-if";
 import autoprefixer from "gulp-autoprefixer"; //구형에서 호환할 수 있도록 지원
 import miniCSS from "gulp-csso"; //css파일 최소화
 import bro from "gulp-bro";
 import babelify from "babelify";
 import fileinclude from "gulp-file-include";
-// import browserSync from "browser-sync";
 
-// const bs = browserSync.create();
+// const bs = BrowserSync.create();
 
 //2. route 추가
 const routes = {
@@ -54,12 +55,13 @@ const html = () =>
     .pipe(
       fileinclude({
         prefix: "@@",
-        basepath: "/knr-gulp-setting-templete/src",
+        basepath: "@file",
+        indent: true,
       }),
     )
     .pipe(htmlmin({ collapseWhitespace: true }))
     .pipe(gulp.dest(routes.html.dest));
-// .pipe(bs.stream());
+// .pipe(gulpIf(bs.active, bs.stream()));
 
 const pug = () =>
   gulp.src(routes.pug.src).pipe(gpug()).pipe(gulp.dest(routes.pug.dest));
@@ -106,11 +108,11 @@ const js = () =>
     .pipe(gulp.dest(routes.js.dest));
 
 const watch = () => {
+  gulp.watch(routes.scss.watch, styles);
+  gulp.watch(routes.js.watch, js);
   gulp.watch(routes.html.watch, html);
   gulp.watch(routes.pug.watch, pug);
   gulp.watch(routes.img.src, img);
-  gulp.watch(routes.scss.watch, styles);
-  gulp.watch(routes.js.watch, js);
 };
 
 const prepare = gulp.series([clean, img]);
@@ -128,7 +130,6 @@ const live = gulp.series([
   // },
 ]);
 
-//gulp series를 실행할 때 마다 prepare, assets, postDev를 실행한다.
 export const build = gulp.series([prepare, assets]);
 export const dev = gulp.series([build, live]);
 

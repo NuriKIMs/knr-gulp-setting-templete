@@ -39,6 +39,8 @@
   },
   "dependencies": {
     "gulp-htmlmin": "^5.0.1",
+    "gulp-if": "^3.0.0",
+    "gulp-inline-source": "^4.0.0",
     "validator": "^13.11.0"
   }
 }
