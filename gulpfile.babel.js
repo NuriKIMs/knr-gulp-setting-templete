@@ -2,7 +2,7 @@
 import del from "del";
 // import BrowserSync from "browser-sync";
 import gulp from "gulp";
-import gpug from "gulp-pug";
+// import gpug from "gulp-pug";
 import htmlmin from "gulp-htmlmin";
 import ws from "gulp-webserver";
 import image from "gulp-image";
@@ -10,12 +10,13 @@ import image from "gulp-image";
 import dartSass from "sass";
 import gulpSass from "gulp-sass";
 const sass = gulpSass(dartSass);
-import gulpIf from "gulp-if";
+// import gulpIf from "gulp-if";
 import autoprefixer from "gulp-autoprefixer"; //구형에서 호환할 수 있도록 지원
 import miniCSS from "gulp-csso"; //css파일 최소화
 import bro from "gulp-bro";
 import babelify from "babelify";
 import fileinclude from "gulp-file-include";
+import inlineSource from "gulp-inline-source";
 
 // const bs = BrowserSync.create();
 
@@ -23,21 +24,21 @@ import fileinclude from "gulp-file-include";
 const routes = {
   html: {
     watch: "src/**/*.html",
-    src: "src/*.html",
-    dest: "src/dist",
-  },
-  pug: {
-    watch: "src/**/*.pug",
-    src: "src/*.pug",
+    src: "src/**/*.html",
     dest: "dist",
   },
+  // pug: {
+  //   watch: ["src/**/*.pug", "src/**/*.html"],
+  //   src: ["src/**/*.pug", "src/**/*.html"],
+  //   dest: "dist",
+  // },
   img: {
     watch: "src/img/*",
     src: "src/img/*",
     dest: "dist/img",
   },
   scss: {
-    watch: "src/scss/**/*.scss",
+    watch: ["src/scss/**/*.scss", "src/scss/**/*.css"],
     src: "src/scss/style.scss",
     dest: "dist/css",
   },
@@ -52,6 +53,7 @@ const routes = {
 const html = () =>
   gulp
     .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
     .pipe(
       fileinclude({
         prefix: "@@",
@@ -59,12 +61,23 @@ const html = () =>
         indent: true,
       }),
     )
-    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(inlineSource())
     .pipe(gulp.dest(routes.html.dest));
 // .pipe(gulpIf(bs.active, bs.stream()));
 
-const pug = () =>
-  gulp.src(routes.pug.src).pipe(gpug()).pipe(gulp.dest(routes.pug.dest));
+// const pug = () =>
+//   gulp
+//     .src(routes.pug.src)
+//     .pipe(gpug())
+//     .pipe(
+//       inlineSource({
+//         swallowErrors: true,
+//         attribute: "inline",
+//         compress: false,
+//         pretty: true,
+//       }),
+//     )
+//     .pipe(gulp.dest(routes.pug.dest));
 
 //작업 후 삭제
 const clean = () => del(["dist/"]);
@@ -111,13 +124,13 @@ const watch = () => {
   gulp.watch(routes.scss.watch, styles);
   gulp.watch(routes.js.watch, js);
   gulp.watch(routes.html.watch, html);
-  gulp.watch(routes.pug.watch, pug);
+  // gulp.watch(routes.pug.watch, pug);
   gulp.watch(routes.img.src, img);
 };
 
 const prepare = gulp.series([clean, img]);
 
-const assets = gulp.series([html, pug, styles, js]);
+const assets = gulp.series([styles, html, js]);
 
 // BrowserSync를 시작하는 task 추가
 const live = gulp.series([
