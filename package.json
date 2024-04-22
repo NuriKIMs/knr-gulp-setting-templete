@@ -30,13 +30,12 @@
     "lint-staged": "^15.2.2",
     "prettier": "3.2.5",
     "sass": "^1.75.0",
-    "uglifyify": "^5.0.2"
+    "uglifyify": "^5.0.2",
+    "gulp-html": "^6.0.0",
+    "validator": "^13.11.0"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   },
-  "dependencies": {
-    "gulp-html": "^6.0.0",
-    "validator": "^13.11.0"
-  }
+  "dependencies": {}
 }
