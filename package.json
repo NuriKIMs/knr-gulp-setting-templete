@@ -36,5 +36,8 @@
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
+  },
+  "dependencies": {
+    "gulp-inline-source-html": "^1.0.3"
   }
 }

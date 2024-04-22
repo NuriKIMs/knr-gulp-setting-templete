@@ -10,6 +10,7 @@ import miniCSS from "gulp-csso";
 import bro from "gulp-bro";
 import babelify from "babelify";
 import ejs from "gulp-ejs";
+import inlineSource from "gulp-inline-source-html";
 
 const sass = gulpSass(dartSass);
 //2. route 추가
@@ -36,7 +37,11 @@ const routes = {
 };
 
 const html = () =>
-  gulp.src(routes.html.src).pipe(ejs()).pipe(gulp.dest(routes.html.dest));
+  gulp
+    .src(routes.html.src)
+    .pipe(ejs())
+    .pipe(inlineSource({ compress: false }))
+    .pipe(gulp.dest(routes.html.dest));
 
 const clean = () => del(["build/"]);
 

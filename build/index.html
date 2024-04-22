@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- @@include('./templates/layout.html') -->
+<style>@import "_reset";
+@import "_variables";
+
+body {
+  background-color: $red;
+  display: flex;
+  place-content: center center;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  font-size: 30px;
+  height: 100vh;
+}
+
+img {
+  width: 100px;
+}
+</style>
 
 <body>
   <div class="wrap" id="home">
@@ -8,11 +26,11 @@
 
     <div class="class-something">
       Anything
-      <img src="./imag/logo.svg" alt="">
+      <img src="img/logo.svg" alt="">
     </div>
   </div>
 
-  <script type="module" src="./js/main.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 
 </html>

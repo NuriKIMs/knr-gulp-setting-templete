@@ -1,8 +1,8 @@
-@import "_reset";
-@import "_variables";
+// @import "_reset";
+// @import "_variables";
 
 body {
-  background-color: $red;
+  background-color: red;
   display: flex;
   place-content: center center;
   flex-direction: column;
