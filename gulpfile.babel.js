@@ -1,24 +1,22 @@
 //1. import 부터 만들기
 import gulp from "gulp";
-import gpug from "gulp-pug";
 import del from "del";
 import ws from "gulp-webserver";
 import image from "gulp-image";
-//To use gulp-sass in an ECMAScript module
 import dartSass from "sass";
 import gulpSass from "gulp-sass";
-const sass = gulpSass(dartSass);
-import autoprefixer from "gulp-autoprefixer"; //구형에서 호환할 수 있도록 지원
-import miniCSS from "gulp-csso"; //css파일 최소화
+import autoprefixer from "gulp-autoprefixer";
+import miniCSS from "gulp-csso";
 import bro from "gulp-bro";
 import babelify from "babelify";
+import ejs from "gulp-ejs";
 
+const sass = gulpSass(dartSass);
 //2. route 추가
 const routes = {
-  pug: {
-    watch: "src/**/*.pug",
-    src: "src/*.pug",
-    dest: "build",
+  html: {
+    src: "src/**/*.html",
+    dest: "build/",
   },
   img: {
     watch: "src/img/*",
@@ -37,11 +35,9 @@ const routes = {
   },
 };
 
-//3. 변수추가 (공식문서 확인) 소스 찾아서~연결하고~빌드까지
-const pug = () =>
-  gulp.src(routes.pug.src).pipe(gpug()).pipe(gulp.dest(routes.pug.dest));
+const html = () =>
+  gulp.src(routes.html.src).pipe(ejs()).pipe(gulp.dest(routes.html.dest));
 
-//작업 후 삭제
 const clean = () => del(["build/"]);
 
 const webserver = () =>
@@ -82,7 +78,6 @@ const js = () =>
     .pipe(gulp.dest(routes.js.dest));
 
 const watch = () => {
-  gulp.watch(routes.pug.watch, pug);
   gulp.watch(routes.img.src, img);
   gulp.watch(routes.scss.watch, styles);
   gulp.watch(routes.js.watch, js);
@@ -90,7 +85,7 @@ const watch = () => {
 
 const prepare = gulp.series([clean, img]);
 
-const assets = gulp.series([pug, styles, js]);
+const assets = gulp.series([html, styles, js]);
 
 //두가지 task를 병행하게 함.
 const live = gulp.parallel([webserver, watch]);
